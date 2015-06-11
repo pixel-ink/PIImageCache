@@ -25,7 +25,7 @@
 # example
 
 ```
-  let url = NSURL(string:"http://test.com")
+  let url = NSURL(string: "http://place-hold.it/200x200")!
   let cache = PIImageCache()
   url.getImageWithCache(cache)
 ```
