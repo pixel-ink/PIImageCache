@@ -17,14 +17,25 @@ class PIImageCacheTests: XCTestCase {
     let image = cache.download(url)!
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
+
+  func testDownloadOrCache() {
+    let cache = PIImageCache()
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    var image: UIImage?, isCache: Bool
+    (image, isCache) = cache.downloadOrCache(url)
+    XCTAssert(isCache == false, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    (image, isCache) = cache.downloadOrCache(url)
+    XCTAssert(isCache == true, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+  }
+
   
   func testGet() {
     let cache = PIImageCache()
-    measureBlock() {
-      let url = NSURL(string: "http://place-hold.it/200x200")!
-      let image = cache.get(url)!
-      XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
-    }
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    let image = cache.get(url)!
+    XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
   func testExtension() {

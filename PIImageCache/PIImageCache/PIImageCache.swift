@@ -36,17 +36,19 @@ class PIImageCache {
   }
   
   func get(url: NSURL) -> UIImage? {
+    return downloadOrCache(url).0
+  }
+  
+  func downloadOrCache(url: NSURL) -> (UIImage?, isCache:Bool) {
     let cache = cacheRead(url)
     if cache != nil {
-      println("hit")
-      return cache
+      return (cache, true)
     }
-    println("mishit")
     let maybeImage = download(url)
     if let image = maybeImage {
       cacheSet(url, image: image)
     }
-    return maybeImage
+    return (maybeImage, false)
   }
 
   func cacheSet(url:NSURL,image:UIImage) {
