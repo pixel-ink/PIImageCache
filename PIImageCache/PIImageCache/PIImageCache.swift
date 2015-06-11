@@ -68,9 +68,13 @@ class PIImageCache {
   
   func download(url: NSURL) -> UIImage? {
     var err: NSError?
-    var imageData :NSData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)!
+    var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
     if let e = err { println(e) }
-    return UIImage(data: imageData)
+    if let imageData = maybeImageData {
+      return UIImage(data: imageData)
+    } else {
+      return nil
+    }
   }
   
 }
