@@ -8,7 +8,7 @@ class ViewController: UIViewController {
   
   @IBAction func btnPushed(sender: AnyObject) {
     let url = NSURL(string: "http://lorempixel.com/200/200/")!
-    imgView.image = cache.download(url)
+    imgView.image = cache.get(url)
   }
   
 }
