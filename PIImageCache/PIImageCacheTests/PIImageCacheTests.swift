@@ -27,4 +27,11 @@ class PIImageCacheTests: XCTestCase {
     }
   }
   
+  func testExtension() {
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    let cache = PIImageCache()
+    let image = url.getImageWithCache(cache)!
+    XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
+  }
+  
 }

@@ -3,6 +3,12 @@
 
 import UIKit
 
+extension NSURL {
+  func getImageWithCache(cache: PIImageCache) -> UIImage? {
+    return cache.get(self)
+  }
+}
+
 class PIImageCache {
 
   struct cacheImage {
