@@ -20,6 +20,14 @@ extension UIImageView {
 
 class PIImageCache {
   
+  init() {
+    maxCount = 10
+  }
+
+  init(maxCount: Int) {
+    self.maxCount = maxCount
+  }
+  
   struct cacheImage {
     let image     :UIImage
     var timeStump :Double
@@ -31,6 +39,8 @@ class PIImageCache {
       return NSDate().timeIntervalSince1970
     }
   }
+  
+  let maxCount : Int
   
   var cache : [cacheImage] = []
   
@@ -45,7 +55,7 @@ class PIImageCache {
   }
   
   func cacheWrite(url:NSURL,image:UIImage) {
-    if cache.count < 10 {
+    if cache.count < maxCount {
       cache.append(cacheImage(image: image, timeStump: now, url: url))
     } else {
       var old = (0,now)
