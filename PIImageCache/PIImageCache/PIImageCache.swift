@@ -9,6 +9,15 @@ extension NSURL {
   }
 }
 
+extension UIImageView {
+  func imageOfURL(url: NSURL, cache: PIImageCache) {
+    cache.get(url) {
+      [weak self] img in
+      self?.image = img
+    }
+  }
+}
+
 class PIImageCache {
   
   struct cacheImage {
