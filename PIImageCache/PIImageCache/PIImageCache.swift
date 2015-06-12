@@ -71,7 +71,7 @@ class PIImageCache {
   }
   
   func get(url: NSURL) -> UIImage? {
-    return downloadOrCache(url).0
+    return perform(url).0
   }
   
   func get(url: NSURL, then: (image:UIImage?) -> Void) {
@@ -87,7 +87,7 @@ class PIImageCache {
   
   var semaphore = dispatch_semaphore_create(1)
   
-  func downloadOrCache(url: NSURL) -> (UIImage?, isCache:Bool) {
+  func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
     dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
     let maybeCache = cacheRead(url)
     dispatch_semaphore_signal(semaphore)
