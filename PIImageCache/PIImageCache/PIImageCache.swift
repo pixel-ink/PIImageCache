@@ -10,13 +10,13 @@ extension NSURL {
 }
 
 class PIImageCache {
-
+  
   struct cacheImage {
     let image     :UIImage
     var timeStump :Double
     let url       :NSURL
   }
-
+  
   var now: Double {
     get {
       return NSDate().timeIntervalSince1970
@@ -24,7 +24,7 @@ class PIImageCache {
   }
   
   var cache : [cacheImage] = []
-
+  
   func cacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<cache.count; i++ {
       if url == cache[i].url {
@@ -34,7 +34,7 @@ class PIImageCache {
     }
     return nil
   }
-    
+  
   func cacheSet(url:NSURL,image:UIImage) {
     if cache.count < 10 {
       cache.append(cacheImage(image: image, timeStump: now, url: url))
