@@ -35,6 +35,21 @@ class PIImageCache {
     return nil
   }
     
+  func cacheSet(url:NSURL,image:UIImage) {
+    if cache.count < 10 {
+      cache.append(cacheImage(image: image, timeStump: now, url: url))
+    } else {
+      var old = (0,now)
+      for var i=0; i<cache.count; i++ {
+        if old.1 < cache[i].timeStump {
+          old = (i,cache[i].timeStump)
+        }
+        cache.removeAtIndex(old.0)
+        cache.append(cacheImage(image: image, timeStump:now, url: url))
+      }
+    }
+  }
+  
   func download(url: NSURL) -> UIImage? {
     var err: NSError?
     var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
@@ -60,21 +75,6 @@ class PIImageCache {
       cacheSet(url, image: image)
     }
     return (maybeImage, false)
-  }
-
-  func cacheSet(url:NSURL,image:UIImage) {
-    if cache.count < 10 {
-      cache.append(cacheImage(image: image, timeStump: now, url: url))
-    } else {
-      var old = (0,now)
-      for var i=0; i<cache.count; i++ {
-        if old.1 < cache[i].timeStump {
-          old = (i,cache[i].timeStump)
-        }
-        cache.removeAtIndex(old.0)
-        cache.append(cacheImage(image: image, timeStump:now, url: url))
-      }
-    }
   }
   
 }
