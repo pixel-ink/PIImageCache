@@ -35,7 +35,7 @@ class PIImageCache {
     return nil
   }
   
-  func cacheSet(url:NSURL,image:UIImage) {
+  func cacheWrite(url:NSURL,image:UIImage) {
     if cache.count < 10 {
       cache.append(cacheImage(image: image, timeStump: now, url: url))
     } else {
@@ -72,7 +72,7 @@ class PIImageCache {
     }
     let maybeImage = download(url)
     if let image = maybeImage {
-      cacheSet(url, image: image)
+      cacheWrite(url, image: image)
     }
     return (maybeImage, false)
   }
