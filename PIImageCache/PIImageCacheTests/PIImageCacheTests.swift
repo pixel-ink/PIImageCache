@@ -10,14 +10,14 @@ import UIKit
 import XCTest
 
 class PIImageCacheTests: XCTestCase {
-
+  
   func testDownload() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
     let image = cache.download(url)!
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
-
+  
   func testDownloadOrCache() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
@@ -29,7 +29,7 @@ class PIImageCacheTests: XCTestCase {
     XCTAssert(isCache == true, "Pass")
     XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
   }
-
+  
   func testCacheLimit() {
     let cache = PIImageCache()
     var image: UIImage?, isCache: Bool
@@ -105,7 +105,7 @@ class PIImageCacheTests: XCTestCase {
       }
     }
   }
-
+  
   func testThreadSafetyAsyncGet() {
     var urls :[NSURL] = []
     for i in 0 ..< 50 {
@@ -121,5 +121,5 @@ class PIImageCacheTests: XCTestCase {
       }
     }
   }
-
+  
 }
