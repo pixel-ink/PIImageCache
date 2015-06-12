@@ -34,6 +34,17 @@ class PIImageCache {
     }
     return nil
   }
+    
+  func download(url: NSURL) -> UIImage? {
+    var err: NSError?
+    var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
+    if let e = err { println(e) }
+    if let imageData = maybeImageData {
+      return UIImage(data: imageData)
+    } else {
+      return nil
+    }
+  }
   
   func get(url: NSURL) -> UIImage? {
     return downloadOrCache(url).0
@@ -63,17 +74,6 @@ class PIImageCache {
         cache.removeAtIndex(old.0)
         cache.append(cacheImage(image: image, timeStump:now, url: url))
       }
-    }
-  }
-  
-  func download(url: NSURL) -> UIImage? {
-    var err: NSError?
-    var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
-    if let e = err { println(e) }
-    if let imageData = maybeImageData {
-      return UIImage(data: imageData)
-    } else {
-      return nil
     }
   }
   
