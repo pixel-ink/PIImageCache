@@ -40,13 +40,13 @@ class PIImageCache {
       cache.append(cacheImage(image: image, timeStump: now, url: url))
     } else {
       var old = (0,now)
-      for var i=0; i<cache.count; i++ {
+      for i in 0 ..< cache.count {
         if old.1 < cache[i].timeStump {
           old = (i,cache[i].timeStump)
         }
-        cache.removeAtIndex(old.0)
-        cache.append(cacheImage(image: image, timeStump:now, url: url))
       }
+      cache.removeAtIndex(old.0)
+      cache.append(cacheImage(image: image, timeStump:now, url: url))
     }
   }
   
