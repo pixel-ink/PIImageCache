@@ -22,10 +22,12 @@ class PIImageCache {
   
   init() {
     maxCount = 10
+    maxByteSize = 3 * 1024 * 1024 //3MB
   }
-
-  init(maxCount: Int) {
+  
+  init(maxCount: Int, maxByteSize: Int) {
     self.maxCount = maxCount
+    self.maxByteSize = maxByteSize
   }
   
   class var shared: PIImageCache {
@@ -48,6 +50,7 @@ class PIImageCache {
   }
   
   let maxCount : Int
+  let maxByteSize  : Int
   
   var cache : [cacheImage] = []
   
@@ -76,15 +79,17 @@ class PIImageCache {
     }
   }
   
-  func download(url: NSURL) -> UIImage? {
+  func download(url: NSURL) -> (UIImage, byteSize: Int)? {
     var err: NSError?
     var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
     if let e = err { println(e) }
     if let imageData = maybeImageData {
-      return UIImage(data: imageData)
-    } else {
-      return nil
+      if let image = UIImage(data: imageData) {
+        let bytes = imageData.length
+        return (image, bytes)
+      }
     }
+    return nil
   }
   
   func get(url: NSURL) -> UIImage? {
@@ -112,12 +117,14 @@ class PIImageCache {
       return (cache, true)
     }
     let maybeImage = download(url)
-    if let image = maybeImage {
-      dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
-      cacheWrite(url, image: image)
-      dispatch_semaphore_signal(semaphore)
+    if let (image, byteSize) = maybeImage {
+      if byteSize < maxByteSize {
+        dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
+        cacheWrite(url, image: image)
+        dispatch_semaphore_signal(semaphore)
+      }
     }
-    return (maybeImage, false)
+    return (maybeImage?.0, false)
   }
   
 }

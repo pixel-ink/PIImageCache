@@ -14,7 +14,8 @@ class PIImageCacheTests: XCTestCase {
   func testDownload() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
-    let image = cache.download(url)!
+    let (image,dataSize) = cache.download(url)!
+    XCTAssert(dataSize == 926 , "Pass")
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
@@ -90,7 +91,7 @@ class PIImageCacheTests: XCTestCase {
   }
   
   func testCacheMaxCount() {
-    let cache = PIImageCache(maxCount: 5)
+    let cache = PIImageCache(maxCount: 5, maxByteSize: 3 * 1024 * 1024)
     var image: UIImage?, isCache: Bool
     var urls :[NSURL] = []
     for i in 0 ..< 10 {
@@ -113,6 +114,18 @@ class PIImageCacheTests: XCTestCase {
     }
   }
 
+  func testCacheMaxSize() {
+    let cache = PIImageCache(maxCount: 10, maxByteSize: 100)
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    var image: UIImage?, isCache: Bool
+    (image, isCache) = cache.perform(url)
+    XCTAssert(isCache == false, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    (image, isCache) = cache.perform(url)
+    XCTAssert(isCache == false, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+  }
+  
   func testSyncGet() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
