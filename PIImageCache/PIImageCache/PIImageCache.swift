@@ -75,12 +75,14 @@ class PIImageCache {
   }
 
   func get(url: NSURL, then: (image:UIImage?) -> Void) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
       [weak self] in
       if let scope = self {
-        then(image: scope.get(url))
+        dispatch_async(dispatch_get_main_queue()) {
+          then(image: scope.get(url))
+        }
       }
-    })
+    }
   }
   
   func downloadOrCache(url: NSURL) -> (UIImage?, isCache:Bool) {
