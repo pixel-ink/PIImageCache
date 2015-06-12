@@ -69,14 +69,14 @@ class PIImageCacheTests: XCTestCase {
     }
   }
   
-  func testGet() {
+  func testSyncGet() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
     let image = cache.get(url)!
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
-  func testAsync() {
+  func testAsyncGet() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
     cache.get(url) {
@@ -92,4 +92,34 @@ class PIImageCacheTests: XCTestCase {
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
+  func testThreadSafetySyncGet() {
+    var urls :[NSURL] = []
+    for i in 0 ..< 50 {
+      urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=No.\(i)")!)
+    }
+    let cache = PIImageCache()
+    for i in 0 ..< 10000 {
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        let image = cache.get(urls[i % 50])!
+        XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
+      }
+    }
+  }
+
+  func testThreadSafetyAsyncGet() {
+    var urls :[NSURL] = []
+    for i in 0 ..< 50 {
+      urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=No.\(i)")!)
+    }
+    let cache = PIImageCache()
+    for i in 0 ..< 10000 {
+      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+        cache.get(urls[i % 50]) {
+          image in
+          XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+        }
+      }
+    }
+  }
+
 }
