@@ -34,35 +34,35 @@ class PIImageCacheTests: XCTestCase {
     let cache = PIImageCache()
     var image: UIImage?, isCache: Bool
     var urls :[NSURL] = []
-    for i in 0..<15 {
+    for i in 0 ..< 15 {
       urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=No.\(i)")!)
     }
-    for i in 0..<10 {
+    for i in 0 ..< 10 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == false, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-    for i in 0..<10 {
+    for i in 0 ..< 10 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == true, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-    for i in 10..<15 {
+    for i in 10 ..< 15 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == false, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-    for i in 0..<10 {
+    for i in 0 ..< 10 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == false, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-    for i in 0..<10 {
+    for i in 0 ..< 10 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == true, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-    for i in 10..<15 {
+    for i in 10 ..< 15 {
       (image, isCache) = cache.downloadOrCache(urls[i])
       XCTAssert(isCache == false, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
