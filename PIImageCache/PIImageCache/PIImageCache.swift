@@ -37,7 +37,7 @@ class PIImageCache {
   
   struct cacheImage {
     let image     :UIImage
-    var timeStump :Double
+    var timeStamp :Double
     let url       :NSURL
   }
   
@@ -54,7 +54,7 @@ class PIImageCache {
   func cacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<cache.count; i++ {
       if url == cache[i].url {
-        cache[i].timeStump = now
+        cache[i].timeStamp = now
         return cache[i].image
       }
     }
@@ -63,16 +63,16 @@ class PIImageCache {
   
   func cacheWrite(url:NSURL,image:UIImage) {
     if cache.count < maxCount {
-      cache.append(cacheImage(image: image, timeStump: now, url: url))
+      cache.append(cacheImage(image: image, timeStamp: now, url: url))
     } else {
       var old = (0,now)
       for i in 0 ..< cache.count {
-        if old.1 < cache[i].timeStump {
-          old = (i,cache[i].timeStump)
+        if old.1 < cache[i].timeStamp {
+          old = (i,cache[i].timeStamp)
         }
       }
       cache.removeAtIndex(old.0)
-      cache.append(cacheImage(image: image, timeStump:now, url: url))
+      cache.append(cacheImage(image: image, timeStamp:now, url: url))
     }
   }
   
