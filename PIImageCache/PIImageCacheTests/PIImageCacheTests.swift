@@ -69,6 +69,26 @@ class PIImageCacheTests: XCTestCase {
     }
   }
 
+  func testSharedInstance() {
+    let cache1 = PIImageCache.shared
+    let cache2 = PIImageCache.shared
+    var image: UIImage?, isCache: Bool
+    var urls :[NSURL] = []
+    for i in 0 ..< 10 {
+      urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=No.\(i)")!)
+    }
+    for i in 0 ..< 10 {
+      (image, isCache) = cache1.perform(urls[i])
+      XCTAssert(isCache == false, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+    for i in 0 ..< 10 {
+      (image, isCache) = cache2.perform(urls[i])
+      XCTAssert(isCache == true, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+  }
+  
   func testCacheMaxCount() {
     let cache = PIImageCache(maxCount: 5)
     var image: UIImage?, isCache: Bool
@@ -92,7 +112,7 @@ class PIImageCacheTests: XCTestCase {
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
   }
-  
+
   func testSyncGet() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!

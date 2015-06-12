@@ -28,6 +28,13 @@ class PIImageCache {
     self.maxCount = maxCount
   }
   
+  class var shared: PIImageCache {
+    struct Static {
+      static let instance: PIImageCache = PIImageCache()
+    }
+    return Static.instance
+  }
+  
   struct cacheImage {
     let image     :UIImage
     var timeStump :Double
