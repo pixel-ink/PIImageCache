@@ -47,7 +47,7 @@ public class PIImageCache {
       return NSDate().timeIntervalSince1970
     }
   }
-
+  
   private var config: Config = Config()
   public class Config {
     public var maxCount : Int = 10
@@ -73,9 +73,10 @@ public class PIImageCache {
   }
   
   private func cacheWrite(url:NSURL,image:UIImage) {
-    if cache.count < config.maxCount {
+    switch cache.count {
+    case 0 ... config.maxCount:
       cache.append(cacheImage(image: image, timeStamp: now, url: url))
-    } else {
+    case config.maxCount + 1://+1 because 0 origin
       var old = (0,now)
       for i in 0 ..< cache.count {
         if old.1 < cache[i].timeStamp {
@@ -84,6 +85,17 @@ public class PIImageCache {
       }
       cache.removeAtIndex(old.0)
       cache.append(cacheImage(image: image, timeStamp:now, url: url))
+    default:
+      for _ in 0 ... 1 {
+        var old = (0,now)
+        for i in 0 ..< cache.count {
+          if old.1 < cache[i].timeStamp {
+            old = (i,cache[i].timeStamp)
+          }
+        }
+        cache.removeAtIndex(old.0)
+      }
+      cache.append(cacheImage(image: image, timeStamp:now, url: url))      
     }
   }
   

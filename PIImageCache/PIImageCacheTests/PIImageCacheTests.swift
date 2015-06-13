@@ -185,4 +185,60 @@ class PIImageCacheTests: XCTestCase {
     }
   }
   
+  func testChangeConfigInRunTime() {
+    var urls :[NSURL] = []
+    for i in 0 ..< 5 {
+      urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=No.\(i)")!)
+    }
+    var image: UIImage?, isCache: Bool
+    
+    var config = PIImageCache.Config()
+    config.maxCount = 5
+    var cache = PIImageCache(config: config)
+
+    for i in 0 ..< 5 {
+      (image, isCache) = cache.perform(urls[i])
+      XCTAssert(isCache == false, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+    
+    for i in 0 ..< 5 {
+      (image, isCache) = cache.perform(urls[i])
+      XCTAssert(isCache == true, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+
+    config.maxCount = 2
+    cache = PIImageCache(config: config)
+    
+    for i in 0 ..< 2 {
+      (image, isCache) = cache.perform(urls[i])
+      XCTAssert(isCache == false, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+    
+    for i in 0 ..< 2 {
+      (image, isCache) = cache.perform(urls[i])
+      println(isCache)
+      XCTAssert(isCache == true, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+
+    config.maxByteSize = 100
+    cache = PIImageCache(config: config)
+    
+    for i in 3 ..< 5 {
+      (image, isCache) = cache.perform(urls[i])
+      XCTAssert(isCache == false, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+    
+    for i in 3 ..< 5 {
+      (image, isCache) = cache.perform(urls[i])
+      println(isCache)
+      XCTAssert(isCache == false, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+  }
+
 }
