@@ -12,7 +12,7 @@
 		8459DB701B2910D10046F3FF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8459DB6E1B2910D10046F3FF /* Main.storyboard */; };
 		8459DB721B2910D10046F3FF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8459DB711B2910D10046F3FF /* Images.xcassets */; };
 		8459DB751B2910D10046F3FF /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8459DB731B2910D10046F3FF /* LaunchScreen.xib */; };
-		8459DB811B2910D10046F3FF /* PIImageCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB801B2910D10046F3FF /* PIImageCacheTests.swift */; };
+		8459DB811B2910D10046F3FF /* PIImageMemoryCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB801B2910D10046F3FF /* PIImageMemoryCacheTests.swift */; };
 		8459DB8B1B2911240046F3FF /* PIImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB8A1B2911240046F3FF /* PIImageCache.swift */; };
 		8459DB8C1B2911240046F3FF /* PIImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB8A1B2911240046F3FF /* PIImageCache.swift */; };
 /* End PBXBuildFile section */
@@ -37,7 +37,7 @@
 		8459DB741B2910D10046F3FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		8459DB7A1B2910D10046F3FF /* PIImageCacheTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PIImageCacheTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459DB7F1B2910D10046F3FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		8459DB801B2910D10046F3FF /* PIImageCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PIImageCacheTests.swift; sourceTree = "<group>"; };
+		8459DB801B2910D10046F3FF /* PIImageMemoryCacheTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PIImageMemoryCacheTests.swift; sourceTree = "<group>"; };
 		8459DB8A1B2911240046F3FF /* PIImageCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIImageCache.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -102,7 +102,7 @@
 		8459DB7D1B2910D10046F3FF /* PIImageCacheTests */ = {
 			isa = PBXGroup;
 			children = (
-				8459DB801B2910D10046F3FF /* PIImageCacheTests.swift */,
+				8459DB801B2910D10046F3FF /* PIImageMemoryCacheTests.swift */,
 				8459DB7E1B2910D10046F3FF /* Supporting Files */,
 			);
 			path = PIImageCacheTests;
@@ -226,7 +226,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8459DB811B2910D10046F3FF /* PIImageCacheTests.swift in Sources */,
+				8459DB811B2910D10046F3FF /* PIImageMemoryCacheTests.swift in Sources */,
 				8459DB8C1B2911240046F3FF /* PIImageCache.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -415,6 +415,7 @@
 				8459DB861B2910D10046F3FF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8459DB871B2910D10046F3FF /* Build configuration list for PBXNativeTarget "PIImageCacheTests" */ = {
 			isa = XCConfigurationList;
@@ -423,6 +424,7 @@
 				8459DB891B2910D10046F3FF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
