@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		840EFCC31B2C9F1600688CA9 /* PIImageCacheBasicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840EFCC21B2C9F1600688CA9 /* PIImageCacheBasicTests.swift */; };
+		840EFCC51B2CC56600688CA9 /* PIImageCacheDiskCacheTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 840EFCC41B2CC56600688CA9 /* PIImageCacheDiskCacheTests.swift */; };
 		8459DB6B1B2910D10046F3FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB6A1B2910D10046F3FF /* AppDelegate.swift */; };
 		8459DB6D1B2910D10046F3FF /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8459DB6C1B2910D10046F3FF /* ViewController.swift */; };
 		8459DB701B2910D10046F3FF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8459DB6E1B2910D10046F3FF /* Main.storyboard */; };
@@ -30,6 +31,7 @@
 
 /* Begin PBXFileReference section */
 		840EFCC21B2C9F1600688CA9 /* PIImageCacheBasicTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIImageCacheBasicTests.swift; sourceTree = "<group>"; };
+		840EFCC41B2CC56600688CA9 /* PIImageCacheDiskCacheTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PIImageCacheDiskCacheTests.swift; sourceTree = "<group>"; };
 		8459DB651B2910D10046F3FF /* PIImageCache.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PIImageCache.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8459DB691B2910D10046F3FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8459DB6A1B2910D10046F3FF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -83,8 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				8459DB6A1B2910D10046F3FF /* AppDelegate.swift */,
-				8459DB8A1B2911240046F3FF /* PIImageCache.swift */,
 				8459DB6C1B2910D10046F3FF /* ViewController.swift */,
+				8459DB8A1B2911240046F3FF /* PIImageCache.swift */,
 				8459DB6E1B2910D10046F3FF /* Main.storyboard */,
 				8459DB711B2910D10046F3FF /* Images.xcassets */,
 				8459DB731B2910D10046F3FF /* LaunchScreen.xib */,
@@ -106,6 +108,7 @@
 			children = (
 				840EFCC21B2C9F1600688CA9 /* PIImageCacheBasicTests.swift */,
 				8459DB801B2910D10046F3FF /* PIImageMemoryCacheTests.swift */,
+				840EFCC41B2CC56600688CA9 /* PIImageCacheDiskCacheTests.swift */,
 				8459DB7E1B2910D10046F3FF /* Supporting Files */,
 			);
 			path = PIImageCacheTests;
@@ -230,6 +233,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				840EFCC31B2C9F1600688CA9 /* PIImageCacheBasicTests.swift in Sources */,
+				840EFCC51B2CC56600688CA9 /* PIImageCacheDiskCacheTests.swift in Sources */,
 				8459DB811B2910D10046F3FF /* PIImageMemoryCacheTests.swift in Sources */,
 				8459DB8C1B2911240046F3FF /* PIImageCache.swift in Sources */,
 			);

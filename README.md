@@ -16,11 +16,33 @@
 
 # install
 
+### step1
+
 - manually
   - add PIImageCache.swift into your project
 - cocoapods
   - add " pod 'PIImageCache', '0.1.1' " into your Podfile
   - add " import PIImageCache " into your code
+
+### step2
+
+- add this into your ViewController
+
+```
+override func didReceiveMemoryWarning() {
+  cache.allMemoryCacheDelete()
+}
+```
+
+### step3
+
+- add this into your AppDelegate
+
+```
+func applicationDidEnterBackground(application: UIApplication) {
+  PIImageCache.shared.oldDiskCacheDelete()
+}
+```
 
 # basic usage
 

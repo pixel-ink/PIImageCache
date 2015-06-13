@@ -11,5 +11,8 @@ class ViewController: UIViewController {
     imgView.image = cache.get(url)
   }
   
+  override func didReceiveMemoryWarning() {
+    cache.allMemoryCacheDelete()
+  }
+  
 }
-

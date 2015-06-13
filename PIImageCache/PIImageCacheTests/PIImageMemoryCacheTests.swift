@@ -248,4 +248,17 @@ class PIImageMemoryCacheTests: XCTestCase {
     }
   }
   
+  func testDeleteMemoryInRuntime () {
+    let cache = PIImageCache()
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    var image: UIImage?, result: PIImageCache.Result
+    (image, result) = cache.perform(url)
+    XCTAssert(result != .MemoryHit, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    cache.allMemoryCacheDelete()
+    (image, result) = cache.perform(url)
+    XCTAssert(result != .MemoryHit, "Pass")
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+  }
+  
 }

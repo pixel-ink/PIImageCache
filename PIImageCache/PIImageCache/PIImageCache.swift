@@ -190,6 +190,42 @@ public class PIImageCache {
     }
   }
   
+  public func allDiskCacheDelete() {
+    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath("\(config.cacheRootDirectory)\(config.cacheFolderName)/", error: nil) as? [String]
+    if let all = allFileName {
+      for fileName in all {
+        fileManager.removeItemAtPath("\(config.cacheRootDirectory)\(fileName)", error: nil)
+      }
+    }
+    folderCreate()
+    dispatch_semaphore_signal(diskSemaphore)
+  }
+  
+  public func oldDiskCacheDelete() {
+    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
+    if let all = allFileName {
+      for fileName in all {
+        if let attr = fileManager.attributesOfFileSystemForPath("\(config.cacheRootDirectory)\(fileName)", error: nil) {
+          let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
+          if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
+            fileManager.removeItemAtPath("\(config.cacheRootDirectory)\(fileName)", error: nil)
+          }
+        }
+      }
+    }
+    folderCreate()
+    dispatch_semaphore_signal(diskSemaphore)
+  }
+  
+  public func allMemoryCacheDelete() {
+    dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
+    memoryCache.removeAll(keepCapacity: false)
+    dispatch_semaphore_signal(memorySemaphore)
+  }
+  
   internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
     var err: NSError?
     var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
