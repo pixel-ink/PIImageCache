@@ -49,12 +49,18 @@ public extension UIImageView {
 
 public class PIImageCache {
   
-  public init() {}
+  private func myInit() {
+    folderCreate()
+  }
+  
+  public init() {
+    myInit()
+  }
   
   public init(config: Config) {
-    dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
-    self.config.maxCount = config.maxCount
-    self.config.maxByteSize = config.maxByteSize
+    myInit()
+    dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
+    self.config = config
     dispatch_semaphore_signal(memorySemaphore)
   }
   
@@ -62,6 +68,7 @@ public class PIImageCache {
     struct Static {
       static let instance: PIImageCache = PIImageCache()
     }
+    Static.instance.myInit()
     return Static.instance
   }
  
@@ -94,8 +101,12 @@ public class PIImageCache {
   
   private var config: Config = Config()
   public class Config {
-    public var maxCount : Int = 10
+    public var maxCount : Int = 10 // 10 images
     public var maxByteSize  : Int = 3 * 1024 * 1024 //3MB
+    public var usingDiskCache = true
+    public var diskCacheExpireMinutes = 24 * 60 // 1 day
+    public var cacheRootDirectory = NSTemporaryDirectory()
+    public var cacheFolderName = "PIImageCache"
   }
   
   public func setConfig(config :Config) {
@@ -106,6 +117,7 @@ public class PIImageCache {
   
   private var memoryCache : [memoryCacheImage] = []
   private var memorySemaphore = dispatch_semaphore_create(1)
+  private let fileManager = NSFileManager.defaultManager()
   
   private func memoryCacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<memoryCache.count; i++ {
@@ -142,6 +154,15 @@ public class PIImageCache {
       }
       memoryCache.append(memoryCacheImage(image: image, timeStamp:now, url: url))
     }
+  }
+  
+  private func folderCreate() {
+    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+    if fileManager.createDirectoryAtPath(
+      path,
+      withIntermediateDirectories: false,
+      attributes: nil,
+      error: nil){}
   }
   
   internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
