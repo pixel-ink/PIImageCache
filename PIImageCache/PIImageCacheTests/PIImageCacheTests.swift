@@ -155,6 +155,17 @@ class PIImageCacheTests: XCTestCase {
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
     let image2 = url.getImageWithCache()!
     XCTAssert(image2.size.width == 200 && image2.size.height == 200 , "Pass")
+    var imgView = UIImageView()
+    imgView.imageOfURL(url, cache: cache) {
+      isOK in
+      XCTAssert(imgView.image!.size.width == 200 && imgView.image!.size.height == 200 , "Pass")
+      XCTAssert(isOK , "Pass")
+    }
+    imgView.imageOfURL(url) {
+      isOK in
+      XCTAssert(imgView.image!.size.width == 200 && imgView.image!.size.height == 200 , "Pass")
+      XCTAssert(isOK , "Pass")
+    }
   }
   
   func testThreadSafetySyncGet() {
