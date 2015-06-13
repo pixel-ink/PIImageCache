@@ -35,6 +35,21 @@ public class PIImageCache {
     }
     return Static.instance
   }
+ 
+  public func get(url: NSURL) -> UIImage? {
+    return perform(url).0
+  }
+  
+  public func get(url: NSURL, then: (image:UIImage?) -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+      [weak self] in
+      if let scope = self {
+        dispatch_async(dispatch_get_main_queue()) {
+          then(image: scope.get(url))
+        }
+      }
+    }
+  }
   
   private struct cacheImage {
     let image     :UIImage
@@ -61,7 +76,8 @@ public class PIImageCache {
   }
   
   private var cache : [cacheImage] = []
-  
+  private var semaphore = dispatch_semaphore_create(1)
+
   private func cacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<cache.count; i++ {
       if url == cache[i].url {
@@ -111,23 +127,6 @@ public class PIImageCache {
     }
     return nil
   }
-  
-  public func get(url: NSURL) -> UIImage? {
-    return perform(url).0
-  }
-  
-  public func get(url: NSURL, then: (image:UIImage?) -> Void) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-      [weak self] in
-      if let scope = self {
-        dispatch_async(dispatch_get_main_queue()) {
-          then(image: scope.get(url))
-        }
-      }
-    }
-  }
-  
-  private var semaphore = dispatch_semaphore_create(1)
   
   internal func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
     dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
