@@ -20,14 +20,13 @@ public extension UIImageView {
 
 public class PIImageCache {
   
-  public init() {
-    maxCount = 10
-    maxByteSize = 3 * 1024 * 1024 //3MB
-  }
+  public init() {}
   
-  public init(maxCount: Int, maxByteSize: Int) {
-    self.maxCount = maxCount
-    self.maxByteSize = maxByteSize
+  public init(config: Config) {
+    dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
+    self.config.maxCount = config.maxCount
+    self.config.maxByteSize = config.maxByteSize
+    dispatch_semaphore_signal(semaphore)
   }
   
   public class var shared: PIImageCache {
@@ -48,9 +47,18 @@ public class PIImageCache {
       return NSDate().timeIntervalSince1970
     }
   }
+
+  private var config: Config = Config()
+  public class Config {
+    public var maxCount : Int = 10
+    public var maxByteSize  : Int = 3 * 1024 * 1024 //3MB
+  }
   
-  private let maxCount : Int
-  private let maxByteSize  : Int
+  private func setConfig(config :Config) {
+    dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
+    self.config = config
+    dispatch_semaphore_signal(semaphore)
+  }
   
   private var cache : [cacheImage] = []
   
@@ -65,7 +73,7 @@ public class PIImageCache {
   }
   
   private func cacheWrite(url:NSURL,image:UIImage) {
-    if cache.count < maxCount {
+    if cache.count < config.maxCount {
       cache.append(cacheImage(image: image, timeStamp: now, url: url))
     } else {
       var old = (0,now)
@@ -118,7 +126,7 @@ public class PIImageCache {
     }
     let maybeImage = download(url)
     if let (image, byteSize) = maybeImage {
-      if byteSize < maxByteSize {
+      if byteSize < config.maxByteSize {
         dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
         cacheWrite(url, image: image)
         dispatch_semaphore_signal(semaphore)

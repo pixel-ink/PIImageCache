@@ -91,7 +91,10 @@ class PIImageCacheTests: XCTestCase {
   }
   
   func testCacheMaxCount() {
-    let cache = PIImageCache(maxCount: 5, maxByteSize: 3 * 1024 * 1024)
+    let config = PIImageCache.Config()
+    config.maxCount = 5
+    config.maxByteSize = 3 * 1024 * 1024
+    let cache = PIImageCache(config: config)
     var image: UIImage?, isCache: Bool
     var urls :[NSURL] = []
     for i in 0 ..< 10 {
@@ -115,7 +118,10 @@ class PIImageCacheTests: XCTestCase {
   }
 
   func testCacheMaxSize() {
-    let cache = PIImageCache(maxCount: 10, maxByteSize: 100)
+    let config = PIImageCache.Config()
+    config.maxCount = 10
+    config.maxByteSize = 100
+    let cache = PIImageCache(config: config)
     let url = NSURL(string: "http://place-hold.it/200x200")!
     var image: UIImage?, isCache: Bool
     (image, isCache) = cache.perform(url)
