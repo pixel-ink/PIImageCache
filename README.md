@@ -55,7 +55,7 @@ image = cache.get(url)!
 let cache = PIImageCache.shared
 var config = PIImageCache.Config()
 config.maxCount = 5
-config.maxByteSize = 100
+config.maxByteSize = 100 * 1024 // 100kB
 cache.setConfig(config)
 
 let url = NSURL(string: "http://place-hold.it/200x200")!

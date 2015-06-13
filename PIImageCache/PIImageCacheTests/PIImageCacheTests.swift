@@ -268,7 +268,7 @@ class PIImageCacheTests: XCTestCase {
     XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     var config = PIImageCache.Config()
     config.maxCount = 5
-    config.maxByteSize = 100
+    config.maxByteSize = 100 * 1024 // 100kB
     cache.setConfig(config)
     image = cache.get(url)!
     XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
