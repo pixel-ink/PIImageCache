@@ -1,5 +1,5 @@
 
-# Working now.
+# not stable.
 
 ---
 
@@ -20,8 +20,9 @@
 
 - manually
   - add PIImageCache.swift into your project
+  - add PIImageCacheExtensions.swift into your project
 - cocoapods
-  - add " pod 'PIImageCache', '0.1.1' " into your Podfile
+  - add " pod 'PIImageCache', '0.2.1' " into your Podfile
   - add " import PIImageCache " into your code
 
 ### step2
