@@ -54,7 +54,7 @@ public class PIImageCache {
     public var maxByteSize  : Int = 3 * 1024 * 1024 //3MB
   }
   
-  private func setConfig(config :Config) {
+  public func setConfig(config :Config) {
     dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
     self.config = config
     dispatch_semaphore_signal(semaphore)
