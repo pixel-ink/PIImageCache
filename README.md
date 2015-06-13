@@ -5,7 +5,7 @@
 
 # PIImageCache
 
-## NSURL -> UIImage with cache (swift)
+### NSURL -> UIImage with cache (swift)
 
 ![](https://cocoapod-badges.herokuapp.com/l/PIImageCache/badge.png)
 ![](https://cocoapod-badges.herokuapp.com/v/PIImageCache/badge.png)
@@ -46,14 +46,14 @@ func applicationDidEnterBackground(application: UIApplication) {
 
 # basic usage
 
-## NSURL extension
+### NSURL extension
 
 ```NSURL.swift
 let url = NSURL(string: "http://place-hold.it/200x200")!
 let image = url.getImageWithCache()
 ```
 
-## UIImageView extension
+### UIImageView extension
 
 ```UIImageView.swift
 let url = NSURL(string: "http://place-hold.it/200x200")!
@@ -61,7 +61,7 @@ let imgView = UIImageView()
 imgView.imageOfURL(url)
 ```
 
-## for background
+### for background
 
 ```PIImageCache.swift
 let url = NSURL(string: "http://place-hold.it/200x200")!
@@ -71,7 +71,7 @@ image = cache.get(url)!
 
 # advanced usage
 
-## configurable
+### configurable
 
 ```Config.swift
 let cache = PIImageCache.shared
