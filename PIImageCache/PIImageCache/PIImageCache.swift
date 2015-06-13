@@ -3,14 +3,14 @@
 
 import UIKit
 
-extension NSURL {
-  func getImageWithCache(cache: PIImageCache) -> UIImage? {
+public extension NSURL {
+  public func getImageWithCache(cache: PIImageCache) -> UIImage? {
     return cache.get(self)
   }
 }
 
-extension UIImageView {
-  func imageOfURL(url: NSURL, cache: PIImageCache) {
+public extension UIImageView {
+  public func imageOfURL(url: NSURL, cache: PIImageCache) {
     cache.get(url) {
       [weak self] img in
       self?.image = img
@@ -18,43 +18,43 @@ extension UIImageView {
   }
 }
 
-class PIImageCache {
+public class PIImageCache {
   
-  init() {
+  public init() {
     maxCount = 10
     maxByteSize = 3 * 1024 * 1024 //3MB
   }
   
-  init(maxCount: Int, maxByteSize: Int) {
+  public init(maxCount: Int, maxByteSize: Int) {
     self.maxCount = maxCount
     self.maxByteSize = maxByteSize
   }
   
-  class var shared: PIImageCache {
+  public class var shared: PIImageCache {
     struct Static {
       static let instance: PIImageCache = PIImageCache()
     }
     return Static.instance
   }
   
-  struct cacheImage {
+  private struct cacheImage {
     let image     :UIImage
     var timeStamp :Double
     let url       :NSURL
   }
   
-  var now: Double {
+  private var now: Double {
     get {
       return NSDate().timeIntervalSince1970
     }
   }
   
-  let maxCount : Int
-  let maxByteSize  : Int
+  private let maxCount : Int
+  private let maxByteSize  : Int
   
-  var cache : [cacheImage] = []
+  private var cache : [cacheImage] = []
   
-  func cacheRead(url: NSURL) -> UIImage? {
+  private func cacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<cache.count; i++ {
       if url == cache[i].url {
         cache[i].timeStamp = now
@@ -64,7 +64,7 @@ class PIImageCache {
     return nil
   }
   
-  func cacheWrite(url:NSURL,image:UIImage) {
+  private func cacheWrite(url:NSURL,image:UIImage) {
     if cache.count < maxCount {
       cache.append(cacheImage(image: image, timeStamp: now, url: url))
     } else {
@@ -79,7 +79,7 @@ class PIImageCache {
     }
   }
   
-  func download(url: NSURL) -> (UIImage, byteSize: Int)? {
+  internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
     var err: NSError?
     var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
     if let e = err { println(e) }
@@ -92,11 +92,11 @@ class PIImageCache {
     return nil
   }
   
-  func get(url: NSURL) -> UIImage? {
+  public func get(url: NSURL) -> UIImage? {
     return perform(url).0
   }
   
-  func get(url: NSURL, then: (image:UIImage?) -> Void) {
+  public func get(url: NSURL, then: (image:UIImage?) -> Void) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
       [weak self] in
       if let scope = self {
@@ -107,9 +107,9 @@ class PIImageCache {
     }
   }
   
-  var semaphore = dispatch_semaphore_create(1)
+  private var semaphore = dispatch_semaphore_create(1)
   
-  func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
+  internal func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
     dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
     let maybeCache = cacheRead(url)
     dispatch_semaphore_signal(semaphore)
