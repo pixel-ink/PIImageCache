@@ -117,6 +117,7 @@ public class PIImageCache {
   
   private var memoryCache : [memoryCacheImage] = []
   private var memorySemaphore = dispatch_semaphore_create(1)
+  private var diskSemaphore = dispatch_semaphore_create(1)
   private let fileManager = NSFileManager.defaultManager()
   
   private func memoryCacheRead(url: NSURL) -> UIImage? {
@@ -165,6 +166,30 @@ public class PIImageCache {
       error: nil){}
   }
   
+  private class func path(url: NSURL, config:Config) -> String? {
+    if let urlstr = url.absoluteString {
+      var code = ""
+      for char in urlstr.utf8 {
+        code = code + "u\(char)"
+      }
+      return "\(config.cacheRootDirectory)\(config.cacheFolderName)/\(code)"
+    }
+    return nil
+  }
+  
+  private func diskCacheRead(url: NSURL) -> UIImage? {
+    if let path = PIImageCache.path(url, config: config) {
+      return UIImage(contentsOfFile: path)
+    }
+    return nil
+  }
+  
+  private func diskCacheWrite(url:NSURL,image:UIImage) {
+    if let path = PIImageCache.path(url, config: config) {
+      NSData(data: UIImagePNGRepresentation(image)).writeToFile(path, atomically: true)
+    }
+  }
+  
   internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
     var err: NSError?
     var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
@@ -178,23 +203,52 @@ public class PIImageCache {
     return nil
   }
   
-  internal func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
-    dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
-    let maybeCache = memoryCacheRead(url)
   internal enum Result {
     case Mishit, MemoryHit, DiskHit
   }
   
+  internal func perform(url: NSURL) -> (UIImage?, Result) {
+    
+    //memory read
+    dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
+    let maybeMemoryCache = memoryCacheRead(url)
     dispatch_semaphore_signal(memorySemaphore)
     if let cache = maybeMemoryCache {
       return (cache, .MemoryHit)
     }
+    
+    //disk read
+    if config.usingDiskCache {
+      dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+      let maybeDiskCache = diskCacheRead(url)
+      dispatch_semaphore_signal(diskSemaphore)
+      if let cache = maybeDiskCache {
+        dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
+        memoryCacheWrite(url, image: cache)
+        dispatch_semaphore_signal(memorySemaphore)
+        return (cache, .DiskHit)
+      }
+    }
+    
+    //download
     let maybeImage = download(url)
     if let (image, byteSize) = maybeImage {
       if byteSize < config.maxByteSize {
-        dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
+        //write memory
+        dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
         memoryCacheWrite(url, image: image)
         dispatch_semaphore_signal(memorySemaphore)
+        //write disk
+        if config.usingDiskCache {
+          dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0)) {
+            [weak self] in
+            if let scope = self {
+              dispatch_semaphore_wait(scope.diskSemaphore, DISPATCH_TIME_FOREVER)
+              scope.diskCacheWrite(url, image: image)
+              dispatch_semaphore_signal(scope.diskSemaphore)
+            }
+          }
+        }
       }
     }
     return (maybeImage?.0, .Mishit)

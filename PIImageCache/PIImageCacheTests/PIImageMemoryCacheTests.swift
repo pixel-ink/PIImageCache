@@ -201,6 +201,7 @@ class PIImageMemoryCacheTests: XCTestCase {
     var image: UIImage?, result: PIImageCache.Result
     
     var config = PIImageCache.Config()
+    config.usingDiskCache = false
     config.maxCount = 5
     var cache = PIImageCache(config: config)
 
