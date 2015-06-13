@@ -254,4 +254,24 @@ class PIImageCacheTests: XCTestCase {
     }
   }
 
+  func testREADME() {
+    let url = NSURL(string: "http://place-hold.it/200x200")!
+    var image = url.getImageWithCache()
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    let imgView = UIImageView()
+    imgView.imageOfURL(url) {
+      isOK in
+      XCTAssert(isOK , "Pass")
+    }
+    var cache = PIImageCache()
+    image = cache.get(url)!
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    var config = PIImageCache.Config()
+    config.maxCount = 5
+    config.maxByteSize = 100
+    cache.setConfig(config)
+    image = cache.get(url)!
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+  }
+  
 }
