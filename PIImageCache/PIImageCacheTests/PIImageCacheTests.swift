@@ -153,6 +153,8 @@ class PIImageCacheTests: XCTestCase {
     let cache = PIImageCache()
     let image = url.getImageWithCache(cache)!
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
+    let image2 = url.getImageWithCache()!
+    XCTAssert(image2.size.width == 200 && image2.size.height == 200 , "Pass")
   }
   
   func testThreadSafetySyncGet() {
