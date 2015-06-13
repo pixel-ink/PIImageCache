@@ -52,10 +52,10 @@ public class PIImageCache {
   public init() {}
   
   public init(config: Config) {
-    dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
+    dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
     self.config.maxCount = config.maxCount
     self.config.maxByteSize = config.maxByteSize
-    dispatch_semaphore_signal(semaphore)
+    dispatch_semaphore_signal(memorySemaphore)
   }
   
   public class var shared: PIImageCache {
@@ -80,7 +80,7 @@ public class PIImageCache {
     }
   }
   
-  private struct cacheImage {
+  private struct memoryCacheImage {
     let image     :UIImage
     var timeStamp :Double
     let url       :NSURL
@@ -99,48 +99,48 @@ public class PIImageCache {
   }
   
   public func setConfig(config :Config) {
-    dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
+    dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
     self.config = config
-    dispatch_semaphore_signal(semaphore)
+    dispatch_semaphore_signal(memorySemaphore)
   }
   
-  private var cache : [cacheImage] = []
-  private var semaphore = dispatch_semaphore_create(1)
-
-  private func cacheRead(url: NSURL) -> UIImage? {
-    for var i=0; i<cache.count; i++ {
-      if url == cache[i].url {
-        cache[i].timeStamp = now
-        return cache[i].image
+  private var memoryCache : [memoryCacheImage] = []
+  private var memorySemaphore = dispatch_semaphore_create(1)
+  
+  private func memoryCacheRead(url: NSURL) -> UIImage? {
+    for var i=0; i<memoryCache.count; i++ {
+      if url == memoryCache[i].url {
+        memoryCache[i].timeStamp = now
+        return memoryCache[i].image
       }
     }
     return nil
   }
   
-  private func cacheWrite(url:NSURL,image:UIImage) {
-    switch cache.count {
+  private func memoryCacheWrite(url:NSURL,image:UIImage) {
+    switch memoryCache.count {
     case 0 ... config.maxCount:
-      cache.append(cacheImage(image: image, timeStamp: now, url: url))
+      memoryCache.append(memoryCacheImage(image: image, timeStamp: now, url: url))
     case config.maxCount + 1://+1 because 0 origin
       var old = (0,now)
-      for i in 0 ..< cache.count {
-        if old.1 < cache[i].timeStamp {
-          old = (i,cache[i].timeStamp)
+      for i in 0 ..< memoryCache.count {
+        if old.1 < memoryCache[i].timeStamp {
+          old = (i,memoryCache[i].timeStamp)
         }
       }
-      cache.removeAtIndex(old.0)
-      cache.append(cacheImage(image: image, timeStamp:now, url: url))
+      memoryCache.removeAtIndex(old.0)
+      memoryCache.append(memoryCacheImage(image: image, timeStamp:now, url: url))
     default:
       for _ in 0 ... 1 {
         var old = (0,now)
-        for i in 0 ..< cache.count {
-          if old.1 < cache[i].timeStamp {
-            old = (i,cache[i].timeStamp)
+        for i in 0 ..< memoryCache.count {
+          if old.1 < memoryCache[i].timeStamp {
+            old = (i,memoryCache[i].timeStamp)
           }
         }
-        cache.removeAtIndex(old.0)
+        memoryCache.removeAtIndex(old.0)
       }
-      cache.append(cacheImage(image: image, timeStamp:now, url: url))      
+      memoryCache.append(memoryCacheImage(image: image, timeStamp:now, url: url))
     }
   }
   
@@ -158,18 +158,18 @@ public class PIImageCache {
   }
   
   internal func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
-    dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
-    let maybeCache = cacheRead(url)
-    dispatch_semaphore_signal(semaphore)
+    dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
+    let maybeCache = memoryCacheRead(url)
+    dispatch_semaphore_signal(memorySemaphore)
     if let cache = maybeCache {
       return (cache, true)
     }
     let maybeImage = download(url)
     if let (image, byteSize) = maybeImage {
       if byteSize < config.maxByteSize {
-        dispatch_semaphore_wait(semaphore,DISPATCH_TIME_FOREVER)
-        cacheWrite(url, image: image)
-        dispatch_semaphore_signal(semaphore)
+        dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
+        memoryCacheWrite(url, image: image)
+        dispatch_semaphore_signal(memorySemaphore)
       }
     }
     return (maybeImage?.0, false)
