@@ -14,7 +14,7 @@ class PIImageMemoryCacheTests: XCTestCase {
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
-  func testDownloadOrCache() {
+  func testPerform() {
     let cache = PIImageCache()
     let url = NSURL(string: "http://place-hold.it/200x200")!
     var image: UIImage?, isCache: Bool
