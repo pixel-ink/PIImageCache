@@ -160,9 +160,13 @@ public class PIImageCache {
   internal func perform(url: NSURL) -> (UIImage?, isCache:Bool) {
     dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
     let maybeCache = memoryCacheRead(url)
+  internal enum Result {
+    case Mishit, MemoryHit, DiskHit
+  }
+  
     dispatch_semaphore_signal(memorySemaphore)
-    if let cache = maybeCache {
-      return (cache, true)
+    if let cache = maybeMemoryCache {
+      return (cache, .MemoryHit)
     }
     let maybeImage = download(url)
     if let (image, byteSize) = maybeImage {
@@ -172,7 +176,7 @@ public class PIImageCache {
         dispatch_semaphore_signal(memorySemaphore)
       }
     }
-    return (maybeImage?.0, false)
+    return (maybeImage?.0, .Mishit)
   }
   
 }
