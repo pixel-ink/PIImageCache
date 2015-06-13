@@ -101,12 +101,12 @@ public class PIImageCache {
   
   private var config: Config = Config()
   public class Config {
-    public var maxCount : Int = 10 // 10 images
-    public var maxByteSize  : Int = 3 * 1024 * 1024 //3MB
-    public var usingDiskCache = true
-    public var diskCacheExpireMinutes = 24 * 60 // 1 day
-    public var cacheRootDirectory = NSTemporaryDirectory()
-    public var cacheFolderName = "PIImageCache"
+    public var maxMemorySum           : Int    = 10 // 10 images
+    public var limitByteSize          : Int    = 3 * 1024 * 1024 //3MB
+    public var usingDiskCache         : Bool   = true
+    public var diskCacheExpireMinutes : Int    = 24 * 60 // 1 day
+    public var cacheRootDirectory     : String = NSTemporaryDirectory()
+    public var cacheFolderName        : String = "PIImageCache"
   }
   
   public func setConfig(config :Config) {
@@ -132,9 +132,9 @@ public class PIImageCache {
   
   private func memoryCacheWrite(url:NSURL,image:UIImage) {
     switch memoryCache.count {
-    case 0 ... config.maxCount:
+    case 0 ... config.maxMemorySum:
       memoryCache.append(memoryCacheImage(image: image, timeStamp: now, url: url))
-    case config.maxCount + 1://+1 because 0 origin
+    case config.maxMemorySum + 1://+1 because 0 origin
       var old = (0,now)
       for i in 0 ..< memoryCache.count {
         if old.1 < memoryCache[i].timeStamp {
@@ -269,7 +269,7 @@ public class PIImageCache {
     //download
     let maybeImage = download(url)
     if let (image, byteSize) = maybeImage {
-      if byteSize < config.maxByteSize {
+      if byteSize < config.limitByteSize {
         //write memory
         dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
         memoryCacheWrite(url, image: image)

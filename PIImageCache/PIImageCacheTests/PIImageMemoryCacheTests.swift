@@ -87,8 +87,8 @@ class PIImageMemoryCacheTests: XCTestCase {
   
   func testCacheMaxCount() {
     let config = PIImageCache.Config()
-    config.maxCount = 5
-    config.maxByteSize = 3 * 1024 * 1024
+    config.maxMemorySum = 5
+    config.limitByteSize = 3 * 1024 * 1024
     let cache = PIImageCache(config: config)
     var image: UIImage?, result: PIImageCache.Result
     var urls :[NSURL] = []
@@ -114,8 +114,8 @@ class PIImageMemoryCacheTests: XCTestCase {
 
   func testCacheMaxSize() {
     let config = PIImageCache.Config()
-    config.maxCount = 10
-    config.maxByteSize = 100
+    config.maxMemorySum = 10
+    config.limitByteSize = 100
     let cache = PIImageCache(config: config)
     let url = NSURL(string: "http://place-hold.it/200x200")!
     var image: UIImage?, result: PIImageCache.Result
@@ -202,7 +202,7 @@ class PIImageMemoryCacheTests: XCTestCase {
     
     var config = PIImageCache.Config()
     config.usingDiskCache = false
-    config.maxCount = 5
+    config.maxMemorySum = 5
     var cache = PIImageCache(config: config)
 
     for i in 0 ..< 5 {
@@ -217,7 +217,7 @@ class PIImageMemoryCacheTests: XCTestCase {
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
 
-    config.maxCount = 2
+    config.maxMemorySum = 2
     cache = PIImageCache(config: config)
     
     for i in 0 ..< 2 {
@@ -232,7 +232,7 @@ class PIImageMemoryCacheTests: XCTestCase {
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
 
-    config.maxByteSize = 100
+    config.limitByteSize = 100
     cache = PIImageCache(config: config)
     
     for i in 3 ..< 5 {

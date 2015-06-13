@@ -76,10 +76,18 @@ image = cache.get(url)!
 ```Config.swift
 let cache = PIImageCache.shared
 var config = PIImageCache.Config()
-config.maxCount = 5
-config.maxByteSize = 100 * 1024 // 100kB
+config.maxMemorySum = 5
+config.limitByteSize = 100 * 1024 // 100kB
 cache.setConfig(config)
 
 let url = NSURL(string: "http://place-hold.it/200x200")!
 let image = cache.get(url)!
 ```
+
+- default values
+  - maxMemorySum           = 10 // 10 images
+  - limitByteSize          = 3 * 1024 * 1024 //3MB
+  - usingDiskCache         = true
+  - diskCacheExpireMinutes = 24 * 60 // 1 day
+  - cacheRootDirectory     = NSTemporaryDirectory()
+  - cacheFolderName        = "PIImageCache"
