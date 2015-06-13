@@ -1,15 +1,10 @@
-//
-//  PIImageCacheTests.swift
-//  PIImageCacheTests
-//
-//  Created by Yoshiki Fujiwara on 2015/06/11.
-//  Copyright (c) 2015年 pixelink. All rights reserved.
-//
+
+// https://github.com/pixel-ink/PIImageCache
 
 import UIKit
 import XCTest
 
-class PIImageCacheTests: XCTestCase {
+class PIImageMemoryCacheTests: XCTestCase {
   
   func testDownload() {
     let cache = PIImageCache()
@@ -252,26 +247,6 @@ class PIImageCacheTests: XCTestCase {
       XCTAssert(isCache == false, "Pass")
       XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     }
-  }
-
-  func testREADME() {
-    let url = NSURL(string: "http://place-hold.it/200x200")!
-    var image = url.getImageWithCache()
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
-    let imgView = UIImageView()
-    imgView.imageOfURL(url) {
-      isOK in
-      XCTAssert(isOK , "Pass")
-    }
-    var cache = PIImageCache()
-    image = cache.get(url)!
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
-    var config = PIImageCache.Config()
-    config.maxCount = 5
-    config.maxByteSize = 100 * 1024 // 100kB
-    cache.setConfig(config)
-    image = cache.get(url)!
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
   }
   
 }
