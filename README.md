@@ -20,7 +20,7 @@
 - UIImageViewとNSURLにextensionを提供します。
 - Swift製です。
 
-# install
+![install](https://raw.github.com/wiki/pixel-ink/PIRipple/i2.png)
 
 ### step1
 
@@ -51,7 +51,7 @@ func applicationDidEnterBackground(application: UIApplication) {
 }
 ```
 
-# basic usage
+![basic useage](https://raw.github.com/wiki/pixel-ink/PIRipple/b2.png)
 
 ### NSURL extension
 
@@ -76,7 +76,7 @@ let cache = PIImageCache.shared
 image = cache.get(url)!
 ```
 
-# advanced usage
+![advanced usage](https://raw.github.com/wiki/pixel-ink/PIRipple/a2.png)
 
 ### prefetch (download to disk cache)
 
