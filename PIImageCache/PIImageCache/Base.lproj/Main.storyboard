@@ -1,9 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="vXZ-lx-hvc">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qQy-S3-yUf">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
+        <!--Table View Controller-->
+        <scene sceneID="5vE-aI-hcx">
+            <objects>
+                <tableViewController id="qQy-S3-yUf" customClass="TableViewController" customModule="PIImageCache" customModuleProvider="target" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" id="EPO-fl-Qxa">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="400"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="cell" rowHeight="100" id="Z36-ji-sBj" customClass="TableViewCell" customModule="PIImageCache" customModuleProvider="target">
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Z36-ji-sBj" id="I9L-QU-HsR">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CI5-qH-BBn">
+                                            <rect key="frame" x="100" y="8" width="132" height="83"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r5W-3v-103">
+                                            <rect key="frame" x="0.0" y="0.0" width="100" height="99"/>
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="100" id="P7V-Vg-r06"/>
+                                            </constraints>
+                                        </imageView>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstAttribute="bottom" secondItem="r5W-3v-103" secondAttribute="bottom" id="O78-v0-ZA0"/>
+                                        <constraint firstAttribute="trailingMargin" secondItem="CI5-qH-BBn" secondAttribute="trailing" id="OWy-cg-7gE"/>
+                                        <constraint firstItem="r5W-3v-103" firstAttribute="top" secondItem="I9L-QU-HsR" secondAttribute="top" id="PBK-Yz-6FM"/>
+                                        <constraint firstItem="CI5-qH-BBn" firstAttribute="top" secondItem="I9L-QU-HsR" secondAttribute="topMargin" id="fCZ-62-h6E"/>
+                                        <constraint firstAttribute="bottomMargin" secondItem="CI5-qH-BBn" secondAttribute="bottom" id="pA4-dj-J1M"/>
+                                        <constraint firstItem="r5W-3v-103" firstAttribute="leading" secondItem="I9L-QU-HsR" secondAttribute="leading" id="wTW-4E-3rV"/>
+                                        <constraint firstItem="CI5-qH-BBn" firstAttribute="leading" secondItem="r5W-3v-103" secondAttribute="trailing" id="x2D-iz-qDl"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="body" destination="CI5-qH-BBn" id="hSk-5r-DyC"/>
+                                    <outlet property="icon" destination="r5W-3v-103" id="xSO-x1-B0F"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="qQy-S3-yUf" id="A2J-tF-Gbd"/>
+                            <outlet property="delegate" destination="qQy-S3-yUf" id="EMQ-Fg-yM4"/>
+                        </connections>
+                    </tableView>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="240" height="400"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gAR-8H-PPd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-82" y="588"/>
+        </scene>
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
             <objects>
@@ -13,11 +69,11 @@
                         <viewControllerLayoutGuide type="bottom" id="2fi-mo-0CV"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="kh9-bI-dsS">
-                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="400"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="rFR-lY-N2x">
-                                <rect key="frame" x="200" y="200" width="200" height="200"/>
+                                <rect key="frame" x="20" y="100" width="200" height="200"/>
                                 <color key="backgroundColor" white="1" alpha="0.25" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="200" id="9iJ-A1-Irf"/>
@@ -25,7 +81,7 @@
                                 </constraints>
                             </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="SQb-b2-AMX">
-                                <rect key="frame" x="275" y="425" width="50" height="30"/>
+                                <rect key="frame" x="95" y="325" width="50" height="30"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="50" id="TjZ-tC-wus"/>
                                     <constraint firstAttribute="height" constant="30" id="vax-n2-kUO"/>
@@ -46,12 +102,15 @@
                             <constraint firstAttribute="centerX" secondItem="SQb-b2-AMX" secondAttribute="centerX" id="n1O-yN-YnD"/>
                         </constraints>
                     </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="240" height="400"/>
                     <connections>
                         <outlet property="imgView" destination="rFR-lY-N2x" id="oVB-Ds-loz"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="x5A-6p-PRh" sceneMemberID="firstResponder"/>
             </objects>
+            <point key="canvasLocation" x="42" y="109"/>
         </scene>
     </scenes>
 </document>
