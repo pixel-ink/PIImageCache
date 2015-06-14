@@ -2,7 +2,7 @@ Pod::Spec.new do |s|
 
   s.name                   = "PIImageCache"
   s.version                = "0.3.1"
-  s.summary                = "Ripple Effect for iOS (swift)"
+  s.summary                = "An asynchronous image downloader, with memory + disk caching."
   s.homepage               = "https://github.com/pixel-ink/PIImageCache"
   s.license                = { :type => "MIT", :file => "LICENSE" }
   s.author                 = { "pixelink" => "https://github.com/pixel-ink" }

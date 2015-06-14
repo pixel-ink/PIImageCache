@@ -1,7 +1,21 @@
 
 # PIImageCache
 
-### NSURL -> UIImage with cache (swift)
+---
+
+- PIImageCache is an asynchronous image downloader with memory + disk caching
+- This memory cache is LRU cache, configurable size.
+- This disk cache can delete old files, on your controlled timing.
+- Useful extensions. (UIImageView and NSURL)
+- Written by Swift.
+
+---
+
+- PIImageCacheは、非同期な画像のダウンロード、インメモリキャッシュ、ディスクキャッシュを提供します。
+- インメモリキャッシュはLRUCacheで、上限サイズは変更できます。
+- ディスクキャッシュは、一定期間経過した古いファイルを削除する方式です。
+- UIImageViewとNSURLにextensionを提供します。
+- Swift製です。
 
 ![](https://cocoapod-badges.herokuapp.com/l/PIImageCache/badge.png)
 ![](https://cocoapod-badges.herokuapp.com/v/PIImageCache/badge.png)
@@ -66,7 +80,7 @@ let cache = PIImageCache.shared
 image = cache.get(url)!
 ```
 
-# optional usage
+# advanced usage
 
 ### prefetch (download to disk cache)
 
@@ -75,8 +89,6 @@ let url = NSURL(string: "http://place-hold.it/200x200")!
 let cache = PIImageCache.shared
 cache.prefetch(url)
 ```
-
-# advanced usage
 
 ### configurable
 
