@@ -7,25 +7,33 @@ import XCTest
 class PIImageMemoryCacheTests: XCTestCase {
   
   let max = PIImageCache.Config().maxMemorySum
+  let url = NSURL(string: "http://place-hold.it/200x200")!
+
+  func check(image: UIImage?) {
+    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+  }
+  
+  func checkSize(dataSize: Int) {
+    XCTAssert(dataSize == 926 , "Pass")
+  }
   
   func testDownload() {
     let cache = PIImageCache()
-    let url = NSURL(string: "http://place-hold.it/200x200")!
     let (image,dataSize) = cache.download(url)!
-    XCTAssert(dataSize == 926 , "Pass")
-    XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
+    checkSize(dataSize)
+    check(image)
   }
   
   func testPerform() {
     let cache = PIImageCache()
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     var image: UIImage?, result: PIImageCache.Result
     (image, result) = cache.perform(url)
     XCTAssert(result != .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
     (image, result) = cache.perform(url)
     XCTAssert(result == .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
   }
   
   func testCacheLimit() {
@@ -38,32 +46,32 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< max {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in 0 ..< max {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in max ..< max + 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in 0 ..< max {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in 0 ..< max {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in max ..< max + 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
   }
 
@@ -78,12 +86,12 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< max {
       (image, result) = cache1.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in 0 ..< max {
       (image, result) = cache2.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
   }
   
@@ -100,17 +108,17 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< max / 2 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in 0 ..< max / 2 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     for i in max / 2 ..< max {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
   }
 
@@ -119,39 +127,39 @@ class PIImageMemoryCacheTests: XCTestCase {
     config.usingDiskCache = false
     config.limitByteSize = 100
     let cache = PIImageCache(config: config)
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     var image: UIImage?, result: PIImageCache.Result
     (image, result) = cache.perform(url)
     XCTAssert(result != .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
     (image, result) = cache.perform(url)
     XCTAssert(result != .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
   }
   
   func testSyncGet() {
     let cache = PIImageCache()
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     let image = cache.get(url)!
     XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
   }
   
   func testAsyncGet() {
     let cache = PIImageCache()
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     cache.get(url) {
-      image in
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      [weak self] image in
+      self?.check(image)
     }
   }
   
   func testExtension() {
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     let cache = PIImageCache()
     let image = url.getImageWithCache(cache)!
-    XCTAssert(image.size.width == 200 && image.size.height == 200 , "Pass")
+    check(image)
     let image2 = url.getImageWithCache()!
-    XCTAssert(image2.size.width == 200 && image2.size.height == 200 , "Pass")
+    check(image2)
     var imgView = UIImageView()
     imgView.imageOfURL(url, cache: cache) {
       isOK in
@@ -188,8 +196,8 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< 10000 {
       dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
         cache.get(urls[i % 50]) {
-          image in
-          XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+          [weak self] image in
+          self?.check(image)
         }
       }
     }
@@ -210,13 +218,13 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     
     for i in 0 ..< 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
 
     config.maxMemorySum = 2
@@ -225,13 +233,13 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 0 ..< 2 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     
     for i in 0 ..< 2 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result == .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
 
     config.limitByteSize = 100
@@ -240,27 +248,27 @@ class PIImageMemoryCacheTests: XCTestCase {
     for i in 3 ..< 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
     
     for i in 3 ..< 5 {
       (image, result) = cache.perform(urls[i])
       XCTAssert(result != .MemoryHit, "Pass")
-      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+      check(image)
     }
   }
   
   func testDeleteMemoryInRuntime () {
     let cache = PIImageCache()
-    let url = NSURL(string: "http://place-hold.it/200x200")!
+
     var image: UIImage?, result: PIImageCache.Result
     (image, result) = cache.perform(url)
     XCTAssert(result != .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
     cache.allMemoryCacheDelete()
     (image, result) = cache.perform(url)
     XCTAssert(result != .MemoryHit, "Pass")
-    XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    check(image)
   }
   
 }
