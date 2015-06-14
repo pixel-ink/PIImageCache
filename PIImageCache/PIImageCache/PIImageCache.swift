@@ -122,7 +122,7 @@ public class PIImageCache {
       error: nil){}
   }
   
-  private class func path(url: NSURL, config:Config) -> String? {
+  private class func filePath(url: NSURL, config:Config) -> String? {
     if let urlstr = url.absoluteString {
       var code = ""
       for char in urlstr.utf8 {
@@ -133,25 +133,30 @@ public class PIImageCache {
     return nil
   }
   
+  private class func folderPath(config: Config) -> String {
+    return "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+  }
+  
   private func diskCacheRead(url: NSURL) -> UIImage? {
-    if let path = PIImageCache.path(url, config: config) {
+    if let path = PIImageCache.filePath(url, config: config) {
       return UIImage(contentsOfFile: path)
     }
     return nil
   }
   
   private func diskCacheWrite(url:NSURL,image:UIImage) {
-    if let path = PIImageCache.path(url, config: config) {
+    if let path = PIImageCache.filePath(url, config: config) {
       NSData(data: UIImagePNGRepresentation(image)).writeToFile(path, atomically: true)
     }
   }
   
   public func allDiskCacheDelete() {
+    let path = PIImageCache.folderPath(config)
     dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
-    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath("\(config.cacheRootDirectory)\(config.cacheFolderName)/", error: nil) as? [String]
+    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
     if let all = allFileName {
       for fileName in all {
-        fileManager.removeItemAtPath("\(config.cacheRootDirectory)\(fileName)", error: nil)
+        fileManager.removeItemAtPath(path + fileName, error: nil)
       }
     }
     folderCreate()
@@ -159,15 +164,15 @@ public class PIImageCache {
   }
   
   public func oldDiskCacheDelete() {
-    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+    let path = PIImageCache.folderPath(config)
     dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
     let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
     if let all = allFileName {
       for fileName in all {
-        if let attr = fileManager.attributesOfFileSystemForPath("\(config.cacheRootDirectory)\(fileName)", error: nil) {
+        if let attr = fileManager.attributesOfItemAtPath(path + fileName, error: nil) {
           let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
           if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
-            fileManager.removeItemAtPath("\(config.cacheRootDirectory)\(fileName)", error: nil)
+            fileManager.removeItemAtPath(path + fileName, error: nil)
           }
         }
       }

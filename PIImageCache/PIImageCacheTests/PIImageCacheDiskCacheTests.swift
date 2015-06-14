@@ -25,4 +25,19 @@ class PIImageDiskCacheTests: XCTestCase {
     }
   }
   
+  func testFileTimeStamp() {
+    PIImageCache.shared.oldDiskCacheDelete()
+    let config = PIImageCache.Config()
+    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+    let allFileName: [String]? = NSFileManager.defaultManager().contentsOfDirectoryAtPath(path, error: nil) as? [String]
+    if let all = allFileName {
+      for fileName in all {
+        if let attr = NSFileManager.defaultManager().attributesOfItemAtPath(path + fileName, error: nil) {
+          let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate(timeIntervalSince1970: 0) )
+          XCTAssert( Double(diff) <= Double(config.diskCacheExpireMinutes * 60) , "Pass")
+        }
+      }
+    }
+  }
+  
 }
