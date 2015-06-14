@@ -31,3 +31,5 @@ DerivedData
 # Carthage/Checkouts
 
 Carthage/Build
+Sample/PIImageCacheSample/Podfile.lock
+Sample/PIImageCacheSample/Pods
