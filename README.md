@@ -86,6 +86,25 @@ let cache = PIImageCache.shared
 cache.prefetch(url)
 ```
 
+### downloadWithId
+
+set id, callback image with the id.
+
+useful for UITableViewCell
+
+```
+// example: code in cellForRowAtIndexPath
+let url = NSURL(string: "http://lorempixel.com/200/200/" )!
+let id = indexPath.row
+cell.id = indexPath.row
+PIImageCache.shared.getWithId(url, id: i) {
+  [weak self] id, image in
+  if id == cell.id {
+    cell.icon.image = image
+  }
+}
+```
+
 ### configurable
 
 ```Config.swift

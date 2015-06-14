@@ -4,6 +4,7 @@ import UIKit
 class TableViewCell : UITableViewCell {
   @IBOutlet weak var icon: UIImageView!
   @IBOutlet weak var body: UILabel!
+  var id:Int!
 }
 
 class TableViewController : UITableViewController {
@@ -19,8 +20,14 @@ class TableViewController : UITableViewController {
     cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
       let cell: TableViewCell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath) as! TableViewCell
       let i = indexPath.row
+      cell.id = i
       let url = NSURL(string: "http://lorempixel.com/200/200/" + lormpixelCategory[i] )!
-      cell.icon.imageOfURL(url)
+      PIImageCache.shared.getWithId(url, id: i) {
+        [weak self] id, image in
+        if id == cell.id {
+          cell.icon.image = image
+        }
+      }
       cell.body.text = lormpixelCategory[i]
       return cell
   }

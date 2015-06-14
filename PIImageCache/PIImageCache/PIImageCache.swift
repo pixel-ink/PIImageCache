@@ -65,6 +65,16 @@ public class PIImageCache {
       }
     }
   }
+
+  public func getWithId(url: NSURL, id: Int, then: (id: Int, image: UIImage?) -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+      [weak self] in
+      let image = self?.get(url)
+      dispatch_async(dispatch_get_main_queue()) {
+        then(id: id, image: image)
+      }
+    }
+  }
   
   public func prefetch(urls: [NSURL]) {
     for url in urls {
