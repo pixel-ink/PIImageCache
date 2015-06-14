@@ -1,10 +1,59 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="qQy-S3-yUf">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14D136" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="7lY-bT-R6X">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
     </dependencies>
     <scenes>
+        <!--View Controller-->
+        <scene sceneID="VwL-yS-hNp">
+            <objects>
+                <viewController id="7lY-bT-R6X" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="YS5-1s-idP"/>
+                        <viewControllerLayoutGuide type="bottom" id="7Si-gs-cJ1"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="HAv-LI-Egw">
+                        <rect key="frame" x="0.0" y="0.0" width="240" height="400"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dHp-Va-KQG">
+                                <rect key="frame" x="93" y="118" width="54" height="30"/>
+                                <state key="normal" title="DEMO1">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="vXZ-lx-hvc" kind="presentation" id="uba-SE-TKh"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="h4t-Da-bFp">
+                                <rect key="frame" x="93" y="252" width="54" height="30"/>
+                                <state key="normal" title="DEMO2">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <segue destination="qQy-S3-yUf" kind="presentation" id="bOq-cr-4rC"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="0.29166027900000002" green="0.76114362479999997" blue="0.49917975069999998" alpha="1" colorSpace="calibratedRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="centerY" secondItem="dHp-Va-KQG" secondAttribute="centerY" multiplier="1.5" id="201-HL-XTo"/>
+                            <constraint firstAttribute="centerX" secondItem="h4t-Da-bFp" secondAttribute="centerX" id="IN0-k2-ms5"/>
+                            <constraint firstAttribute="centerX" secondItem="dHp-Va-KQG" secondAttribute="centerX" id="P94-Ti-O2f"/>
+                            <constraint firstAttribute="centerY" secondItem="h4t-Da-bFp" secondAttribute="centerY" multiplier="0.75" id="So1-ks-UFv"/>
+                        </constraints>
+                    </view>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="240" height="400"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="y85-Sb-oi7" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-327" y="308"/>
+        </scene>
         <!--Table View Controller-->
         <scene sceneID="5vE-aI-hcx">
             <objects>
@@ -22,7 +71,7 @@
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CI5-qH-BBn">
                                             <rect key="frame" x="100" y="8" width="132" height="83"/>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                            <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="r5W-3v-103">
@@ -42,6 +91,7 @@
                                         <constraint firstItem="CI5-qH-BBn" firstAttribute="leading" secondItem="r5W-3v-103" secondAttribute="trailing" id="x2D-iz-qDl"/>
                                     </constraints>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" red="0.29166027900000002" green="0.76114362479999997" blue="0.49917975069999998" alpha="1" colorSpace="calibratedRGB"/>
                                 <connections>
                                     <outlet property="body" destination="CI5-qH-BBn" id="hSk-5r-DyC"/>
                                     <outlet property="icon" destination="r5W-3v-103" id="xSO-x1-B0F"/>
@@ -58,7 +108,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="gAR-8H-PPd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-82" y="588"/>
+            <point key="canvasLocation" x="42" y="584"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="ufC-wZ-h7g">
@@ -86,7 +136,7 @@
                                     <constraint firstAttribute="width" constant="50" id="TjZ-tC-wus"/>
                                     <constraint firstAttribute="height" constant="30" id="vax-n2-kUO"/>
                                 </constraints>
-                                <state key="normal" title="Button">
+                                <state key="normal" title="GET">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
