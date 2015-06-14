@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name                   = "PIImageCache"
-  s.version                = "0.3.1"
+  s.version                = "1.0.0"
   s.summary                = "An asynchronous image downloader, with memory + disk caching."
   s.homepage               = "https://github.com/pixel-ink/PIImageCache"
   s.license                = { :type => "MIT", :file => "LICENSE" }
