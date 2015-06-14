@@ -4,6 +4,7 @@
 ![](https://cocoapod-badges.herokuapp.com/l/PIImageCache/badge.png)
 ![](https://cocoapod-badges.herokuapp.com/v/PIImageCache/badge.png)
 ![](https://cocoapod-badges.herokuapp.com/p/PIImageCache/badge.png)
+![](https://img.shields.io/badge/twitter-@pixelink__jp-blue.svg)
 
 - PIImageCache is an asynchronous image downloader with memory + disk caching
 - This memory cache is LRU cache, configurable size.
