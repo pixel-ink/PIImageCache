@@ -31,7 +31,7 @@
 
 ```
 override func didReceiveMemoryWarning() {
-  cache.allMemoryCacheDelete()
+  PIImageCache.shared.allMemoryCacheDelete()
 }
 ```
 
