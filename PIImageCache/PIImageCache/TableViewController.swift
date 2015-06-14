@@ -9,6 +9,15 @@ class TableViewCell : UITableViewCell {
 
 class TableViewController : UITableViewController {
   
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    var urls: [NSURL] = []
+    for category in lormpixelCategory {
+      urls.append( NSURL(string: "http://lorempixel.com/200/200/" + category)! )
+    }
+    PIImageCache.shared.prefetch(urls)
+  }
+  
   let lormpixelCategory =
   [ "abstract", "animals", "business", "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports", "technics", "transport", "abstract", "animals", "business", "cats", "city", "food", "nightlife", "fashion", "people", "nature", "sports", "technics", "transport" ]
   
