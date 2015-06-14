@@ -1,8 +1,4 @@
 
-# not stable.
-
----
-
 # PIImageCache
 
 ### NSURL -> UIImage with cache (swift)
@@ -22,7 +18,7 @@
   - add PIImageCache.swift into your project
   - add PIImageCacheExtensions.swift into your project
 - cocoapods
-  - add " pod 'PIImageCache', '0.2.1' " into your Podfile
+  - add " pod 'PIImageCache', '0.3.1' " into your Podfile
   - add " import PIImageCache " into your code
 
 ### step2

@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name                   = "PIImageCache"
-  s.version                = "0.2.1"
+  s.version                = "0.3.1"
   s.summary                = "Ripple Effect for iOS (swift)"
   s.homepage               = "https://github.com/pixel-ink/PIImageCache"
   s.license                = { :type => "MIT", :file => "LICENSE" }
