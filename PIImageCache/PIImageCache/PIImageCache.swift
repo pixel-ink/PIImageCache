@@ -14,10 +14,10 @@ public class PIImageCache {
   }
   
   public init(config: Config) {
-    myInit()
     dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
     self.config = config
     dispatch_semaphore_signal(memorySemaphore)
+    myInit()
   }
   
   public class var shared: PIImageCache {
