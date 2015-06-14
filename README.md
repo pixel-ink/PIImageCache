@@ -62,12 +62,22 @@ let imgView = UIImageView()
 imgView.imageOfURL(url)
 ```
 
-### for background
+### download
 
 ```PIImageCache.swift
 let url = NSURL(string: "http://place-hold.it/200x200")!
 let cache = PIImageCache.shared
 image = cache.get(url)!
+```
+
+# optional usage
+
+### prefetch (download to disk cache)
+
+```
+let url = NSURL(string: "http://place-hold.it/200x200")!
+let cache = PIImageCache.shared
+cache.prefetch(url)
 ```
 
 # advanced usage
@@ -90,5 +100,6 @@ let image = cache.get(url)!
   - limitByteSize          = 3 * 1024 * 1024 //3MB
   - usingDiskCache         = true
   - diskCacheExpireMinutes = 24 * 60 // 1 day
+  - prefetchOprationCount  = 5
   - cacheRootDirectory     = NSTemporaryDirectory()
   - cacheFolderName        = "PIImageCache"

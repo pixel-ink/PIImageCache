@@ -7,6 +7,7 @@ public class PIImageCache {
   
   private func myInit() {
     folderCreate()
+    prefetchQueueInit()
   }
   
   public init() {
@@ -61,6 +62,7 @@ public class PIImageCache {
     public var limitByteSize          : Int    = 3 * 1024 * 1024 //3MB
     public var usingDiskCache         : Bool   = true
     public var diskCacheExpireMinutes : Int    = 24 * 60 // 1 day
+    public var prefetchOprationCount  : Int    = 5
     public var cacheRootDirectory     : String = NSTemporaryDirectory()
     public var cacheFolderName        : String = "PIImageCache"
   }
@@ -68,6 +70,7 @@ public class PIImageCache {
   public func setConfig(config :Config) {
     dispatch_semaphore_wait(memorySemaphore,DISPATCH_TIME_FOREVER)
     self.config = config
+    myInit()
     dispatch_semaphore_signal(memorySemaphore)
   }
   
@@ -249,6 +252,42 @@ public class PIImageCache {
       }
     }
     return (maybeImage?.0, .Mishit)
+  }
+  
+  let prefetchQueue = NSOperationQueue()
+
+  private func prefetchQueueInit(){
+    prefetchQueue.maxConcurrentOperationCount = config.prefetchOprationCount
+    prefetchQueue.qualityOfService = NSQualityOfService.Background
+  }
+
+  public func prefetch(urls: [NSURL]) {
+    for url in urls {
+      prefetch(url)
+    }
+  }
+  
+  public func prefetch(url: NSURL) {
+    var op = NSOperation()
+    op.completionBlock = {
+      [weak self] in
+      self?.downloadToDisk(url)
+    }
+    prefetchQueue.addOperation(op)
+  }
+  
+  private func downloadToDisk(url: NSURL) {
+    let path = PIImageCache.filePath(url, config: config)
+    if path == nil { return }
+    if fileManager.fileExistsAtPath(path!) { return }
+    let maybeImage = download(url)
+    if let (image, byteSize) = maybeImage {
+      if byteSize < config.limitByteSize {
+        dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+        diskCacheWrite(url, image: image)
+        dispatch_semaphore_signal(diskSemaphore)
+      }
+    }
   }
   
 }

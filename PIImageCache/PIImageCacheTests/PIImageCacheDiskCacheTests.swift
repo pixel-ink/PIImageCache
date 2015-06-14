@@ -40,4 +40,22 @@ class PIImageDiskCacheTests: XCTestCase {
     }
   }
   
+  func testPrefetch() {
+    let cache = PIImageCache()
+    var image: UIImage?, result: PIImageCache.Result
+    var urls :[NSURL] = []
+    for i in 0 ..< 20 {
+      urls.append(NSURL(string: "http://place-hold.it/200x200/2ff&text=BackgroundNo.\(i)")!)
+    }
+    cache.prefetch(urls)
+    for i in 0 ..< 20 {
+      (image, result) = cache.perform(urls[i])
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+    for i in 0 ..< 20 {
+      (image, result) = cache.perform(urls[i])
+      XCTAssert(result != .Mishit, "Pass")
+      XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
+    }
+  }
 }
