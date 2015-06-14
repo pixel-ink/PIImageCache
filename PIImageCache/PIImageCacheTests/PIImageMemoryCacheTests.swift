@@ -114,6 +114,7 @@ class PIImageMemoryCacheTests: XCTestCase {
 
   func testCacheMaxSize() {
     let config = PIImageCache.Config()
+    config.usingDiskCache = false
     config.maxMemorySum = 10
     config.limitByteSize = 100
     let cache = PIImageCache(config: config)
@@ -123,7 +124,7 @@ class PIImageMemoryCacheTests: XCTestCase {
     XCTAssert(result != .MemoryHit, "Pass")
     XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
     (image, result) = cache.perform(url)
-    XCTAssert(result == .MemoryHit, "Pass")
+    XCTAssert(result != .MemoryHit, "Pass")
     XCTAssert(image!.size.width == 200 && image!.size.height == 200 , "Pass")
   }
   
