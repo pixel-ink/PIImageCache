@@ -5,6 +5,8 @@ import UIKit
 
 public class PIImageCache {
   
+  //initialize
+  
   private func myInit() {
     folderCreate()
     prefetchQueueInit()
@@ -28,35 +30,9 @@ public class PIImageCache {
     Static.instance.myInit()
     return Static.instance
   }
- 
-  public func get(url: NSURL) -> UIImage? {
-    return perform(url).0
-  }
   
-  public func get(url: NSURL, then: (image:UIImage?) -> Void) {
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
-      [weak self] in
-      if let scope = self {
-        dispatch_async(dispatch_get_main_queue()) {
-          then(image: scope.get(url))
-        }
-      }
-    }
-  }
+  //public config method
   
-  private struct memoryCacheImage {
-    let image     :UIImage
-    var timeStamp :Double
-    let url       :NSURL
-  }
-  
-  private var now: Double {
-    get {
-      return NSDate().timeIntervalSince1970
-    }
-  }
-  
-  private var config: Config = Config()
   public class Config {
     public var maxMemorySum           : Int    = 10 // 10 images
     public var limitByteSize          : Int    = 3 * 1024 * 1024 //3MB
@@ -74,10 +50,93 @@ public class PIImageCache {
     dispatch_semaphore_signal(memorySemaphore)
   }
   
+  //public download method
+  
+  public func get(url: NSURL) -> UIImage? {
+    return perform(url).0
+  }
+  
+  public func get(url: NSURL, then: (image:UIImage?) -> Void) {
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
+      [weak self] in
+      if let scope = self {
+        dispatch_async(dispatch_get_main_queue()) {
+          then(image: scope.get(url))
+        }
+      }
+    }
+  }
+  
+  public func prefetch(urls: [NSURL]) {
+    for url in urls {
+      prefetch(url)
+    }
+  }
+  
+  public func prefetch(url: NSURL) {
+    var op = NSOperation()
+    op.completionBlock = {
+      [weak self] in
+      self?.downloadToDisk(url)
+    }
+    prefetchQueue.addOperation(op)
+  }
+  
+  //public delete method
+  
+  public func allMemoryCacheDelete() {
+    dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
+    memoryCache.removeAll(keepCapacity: false)
+    dispatch_semaphore_signal(memorySemaphore)
+  }
+  
+  public func allDiskCacheDelete() {
+    let path = PIImageCache.folderPath(config)
+    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
+    if let all = allFileName {
+      for fileName in all {
+        fileManager.removeItemAtPath(path + fileName, error: nil)
+      }
+    }
+    folderCreate()
+    dispatch_semaphore_signal(diskSemaphore)
+  }
+  
+  public func oldDiskCacheDelete() {
+    let path = PIImageCache.folderPath(config)
+    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
+    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
+    if let all = allFileName {
+      for fileName in all {
+        if let attr = fileManager.attributesOfItemAtPath(path + fileName, error: nil) {
+          let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
+          if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
+            fileManager.removeItemAtPath(path + fileName, error: nil)
+          }
+        }
+      }
+    }
+    folderCreate()
+    dispatch_semaphore_signal(diskSemaphore)
+  }
+  
+  //member
+  
+  private var config: Config = Config()
   private var memoryCache : [memoryCacheImage] = []
   private var memorySemaphore = dispatch_semaphore_create(1)
   private var diskSemaphore = dispatch_semaphore_create(1)
   private let fileManager = NSFileManager.defaultManager()
+  private let prefetchQueue = NSOperationQueue()
+  
+  private struct memoryCacheImage {
+    let image     :UIImage
+    var timeStamp :Double
+    let url       :NSURL
+  }
+  
+  // memory cache
   
   private func memoryCacheRead(url: NSURL) -> UIImage? {
     for var i=0; i<memoryCache.count; i++ {
@@ -116,29 +175,8 @@ public class PIImageCache {
     }
   }
   
-  private func folderCreate() {
-    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
-    if fileManager.createDirectoryAtPath(
-      path,
-      withIntermediateDirectories: false,
-      attributes: nil,
-      error: nil){}
-  }
+  //disk cache
   
-  private class func filePath(url: NSURL, config:Config) -> String? {
-    if let urlstr = url.absoluteString {
-      var code = ""
-      for char in urlstr.utf8 {
-        code = code + "u\(char)"
-      }
-      return "\(config.cacheRootDirectory)\(config.cacheFolderName)/\(code)"
-    }
-    return nil
-  }
-  
-  private class func folderPath(config: Config) -> String {
-    return "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
-  }
   
   private func diskCacheRead(url: NSURL) -> UIImage? {
     if let path = PIImageCache.filePath(url, config: config) {
@@ -153,41 +191,10 @@ public class PIImageCache {
     }
   }
   
-  public func allDiskCacheDelete() {
-    let path = PIImageCache.folderPath(config)
-    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
-    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
-    if let all = allFileName {
-      for fileName in all {
-        fileManager.removeItemAtPath(path + fileName, error: nil)
-      }
-    }
-    folderCreate()
-    dispatch_semaphore_signal(diskSemaphore)
-  }
+  //private download
   
-  public func oldDiskCacheDelete() {
-    let path = PIImageCache.folderPath(config)
-    dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
-    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
-    if let all = allFileName {
-      for fileName in all {
-        if let attr = fileManager.attributesOfItemAtPath(path + fileName, error: nil) {
-          let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
-          if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
-            fileManager.removeItemAtPath(path + fileName, error: nil)
-          }
-        }
-      }
-    }
-    folderCreate()
-    dispatch_semaphore_signal(diskSemaphore)
-  }
-  
-  public func allMemoryCacheDelete() {
-    dispatch_semaphore_wait(memorySemaphore, DISPATCH_TIME_FOREVER)
-    memoryCache.removeAll(keepCapacity: false)
-    dispatch_semaphore_signal(memorySemaphore)
+  internal enum Result {
+    case Mishit, MemoryHit, DiskHit
   }
   
   internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
@@ -201,10 +208,6 @@ public class PIImageCache {
       }
     }
     return nil
-  }
-  
-  internal enum Result {
-    case Mishit, MemoryHit, DiskHit
   }
   
   internal func perform(url: NSURL) -> (UIImage?, Result) {
@@ -254,28 +257,6 @@ public class PIImageCache {
     return (maybeImage?.0, .Mishit)
   }
   
-  let prefetchQueue = NSOperationQueue()
-
-  private func prefetchQueueInit(){
-    prefetchQueue.maxConcurrentOperationCount = config.prefetchOprationCount
-    prefetchQueue.qualityOfService = NSQualityOfService.Background
-  }
-
-  public func prefetch(urls: [NSURL]) {
-    for url in urls {
-      prefetch(url)
-    }
-  }
-  
-  public func prefetch(url: NSURL) {
-    var op = NSOperation()
-    op.completionBlock = {
-      [weak self] in
-      self?.downloadToDisk(url)
-    }
-    prefetchQueue.addOperation(op)
-  }
-  
   private func downloadToDisk(url: NSURL) {
     let path = PIImageCache.filePath(url, config: config)
     if path == nil { return }
@@ -288,6 +269,43 @@ public class PIImageCache {
         dispatch_semaphore_signal(diskSemaphore)
       }
     }
+  }
+  
+  //util
+  
+  private var now: Double {
+    get {
+      return NSDate().timeIntervalSince1970
+    }
+  }
+  
+  private func folderCreate() {
+    let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+    if fileManager.createDirectoryAtPath(
+      path,
+      withIntermediateDirectories: false,
+      attributes: nil,
+      error: nil){}
+  }
+  
+  private class func filePath(url: NSURL, config:Config) -> String? {
+    if let urlstr = url.absoluteString {
+      var code = ""
+      for char in urlstr.utf8 {
+        code = code + "u\(char)"
+      }
+      return "\(config.cacheRootDirectory)\(config.cacheFolderName)/\(code)"
+    }
+    return nil
+  }
+  
+  private class func folderPath(config: Config) -> String {
+    return "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
+  }
+  
+  private func prefetchQueueInit(){
+    prefetchQueue.maxConcurrentOperationCount = config.prefetchOprationCount
+    prefetchQueue.qualityOfService = NSQualityOfService.Background
   }
   
 }
