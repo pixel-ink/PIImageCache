@@ -1,7 +1,9 @@
 
-# PIImageCache
+![](https://raw.github.com/wiki/pixel-ink/PIRipple/piimagecache.png)
 
----
+![](https://cocoapod-badges.herokuapp.com/l/PIImageCache/badge.png)
+![](https://cocoapod-badges.herokuapp.com/v/PIImageCache/badge.png)
+![](https://cocoapod-badges.herokuapp.com/p/PIImageCache/badge.png)
 
 - PIImageCache is an asynchronous image downloader with memory + disk caching
 - This memory cache is LRU cache, configurable size.
@@ -16,13 +18,6 @@
 - ディスクキャッシュは、一定期間経過した古いファイルを削除する方式です。
 - UIImageViewとNSURLにextensionを提供します。
 - Swift製です。
-
-![](https://cocoapod-badges.herokuapp.com/l/PIImageCache/badge.png)
-![](https://cocoapod-badges.herokuapp.com/v/PIImageCache/badge.png)
-![](https://cocoapod-badges.herokuapp.com/p/PIImageCache/badge.png)
-
----
-
 
 # install
 
