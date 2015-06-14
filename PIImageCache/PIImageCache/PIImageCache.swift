@@ -59,10 +59,9 @@ public class PIImageCache {
   public func get(url: NSURL, then: (image:UIImage?) -> Void) {
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)) {
       [weak self] in
-      if let scope = self {
-        dispatch_async(dispatch_get_main_queue()) {
-          then(image: scope.get(url))
-        }
+      let image = self?.get(url)
+      dispatch_async(dispatch_get_main_queue()) {
+        then(image: image)
       }
     }
   }
