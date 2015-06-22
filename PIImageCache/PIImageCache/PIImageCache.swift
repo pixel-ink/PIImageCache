@@ -161,7 +161,7 @@ public class PIImageCache {
     switch memoryCache.count {
     case 0 ... config.maxMemorySum:
       memoryCache.append(memoryCacheImage(image: image, timeStamp: now, url: url))
-    case config.maxMemorySum + 1://+1 because 0 origin
+    case config.maxMemorySum + 1:
       var old = (0,now)
       for i in 0 ..< memoryCache.count {
         if old.1 < memoryCache[i].timeStamp {
