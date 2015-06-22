@@ -170,8 +170,8 @@ public class PIImageCache {
       }
       memoryCache.removeAtIndex(old.0)
       memoryCache.append(memoryCacheImage(image: image, timeStamp:now, url: url))
-    default:
-      for _ in 0 ... 1 {
+    default://case: over the limit. because, limit can chenge in runtime.
+      for _ in 0 ... 1 {//release cache slowly.
         var old = (0,now)
         for i in 0 ..< memoryCache.count {
           if old.1 < memoryCache[i].timeStamp {
