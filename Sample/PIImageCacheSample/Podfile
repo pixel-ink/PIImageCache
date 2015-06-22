@@ -1,2 +1,0 @@
-use_frameworks!
-pod 'PIImageCache', '0.2.1'
