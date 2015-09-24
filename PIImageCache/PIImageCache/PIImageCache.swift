@@ -83,7 +83,7 @@ public class PIImageCache {
   }
   
   public func prefetch(url: NSURL) {
-    var op = NSOperation()
+    let op = NSOperation()
     op.completionBlock = {
       [weak self] in
       self?.downloadToDisk(url)
@@ -102,11 +102,19 @@ public class PIImageCache {
   public func allDiskCacheDelete() {
     let path = PIImageCache.folderPath(config)
     dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
-    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
-    if let all = allFileName {
-      for fileName in all {
-        fileManager.removeItemAtPath(path + fileName, error: nil)
-      }
+    do {
+        let allFileName: [String]? = try fileManager.contentsOfDirectoryAtPath(path) as [String]
+        if let all = allFileName {
+            for fileName in all {
+                do {
+                    try fileManager.removeItemAtPath(path + fileName)
+                } catch {
+                    print("Error removing item form cache")
+                }
+            }
+        }
+    } catch {
+        print("Error parsing directory")
     }
     folderCreate()
     dispatch_semaphore_signal(diskSemaphore)
@@ -115,16 +123,27 @@ public class PIImageCache {
   public func oldDiskCacheDelete() {
     let path = PIImageCache.folderPath(config)
     dispatch_semaphore_wait(diskSemaphore, DISPATCH_TIME_FOREVER)
-    let allFileName: [String]? = fileManager.contentsOfDirectoryAtPath(path, error: nil) as? [String]
-    if let all = allFileName {
-      for fileName in all {
-        if let attr = fileManager.attributesOfItemAtPath(path + fileName, error: nil) {
-          let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
-          if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
-            fileManager.removeItemAtPath(path + fileName, error: nil)
-          }
+    do {
+        let allFileName: [String]? = try fileManager.contentsOfDirectoryAtPath(path) as [String]
+        if let all = allFileName {
+            for fileName in all {
+                do {
+                    let attr = try fileManager.attributesOfItemAtPath(path + fileName)
+                    let diff = NSDate().timeIntervalSinceDate( (attr[NSFileModificationDate] as? NSDate) ?? NSDate() )
+                    if Double(diff) > Double(config.diskCacheExpireMinutes * 60) {
+                        do {
+                            try fileManager.removeItemAtPath(path + fileName)
+                        } catch {
+                            print("Error removing item from cache")
+                        }
+                    }
+                } catch {
+                    print("Error getting attributes from item")
+                }
+            }
         }
-      }
+    } catch {
+        print("Error parsing directory")
     }
     folderCreate()
     dispatch_semaphore_signal(diskSemaphore)
@@ -196,7 +215,7 @@ public class PIImageCache {
   
   private func diskCacheWrite(url:NSURL,image:UIImage) {
     if let path = PIImageCache.filePath(url, config: config) {
-      NSData(data: UIImagePNGRepresentation(image)).writeToFile(path, atomically: true)
+      NSData(data: UIImagePNGRepresentation(image)!).writeToFile(path, atomically: true)
     }
   }
   
@@ -207,14 +226,14 @@ public class PIImageCache {
   }
   
   internal func download(url: NSURL) -> (UIImage, byteSize: Int)? {
-    var err: NSError?
-    var maybeImageData = NSData(contentsOfURL: url, options:.UncachedRead, error: &err)
-    if let e = err { println(e) }
-    if let imageData = maybeImageData {
-      if let image = UIImage(data: imageData) {
-        let bytes = imageData.length
-        return (image, bytes)
-      }
+    do {
+        let maybeImageData = try NSData(contentsOfURL: url, options:NSDataReadingOptions.UncachedRead)
+        if let image = UIImage(data: maybeImageData) {
+            let bytes = maybeImageData.length
+            return (image, bytes)
+        }
+    } catch {
+        print("Error downloading image")
     }
     return nil
   }
@@ -290,22 +309,23 @@ public class PIImageCache {
   
   private func folderCreate() {
     let path = "\(config.cacheRootDirectory)\(config.cacheFolderName)/"
-    if fileManager.createDirectoryAtPath(
-      path,
-      withIntermediateDirectories: false,
-      attributes: nil,
-      error: nil){}
+    do {
+        try fileManager.createDirectoryAtPath(
+            path,
+            withIntermediateDirectories: false,
+            attributes: nil)
+    } catch {
+        print("Error creating folder")
+    }
   }
   
   private class func filePath(url: NSURL, config:Config) -> String? {
-    if let urlstr = url.absoluteString {
-      var code = ""
-      for char in urlstr.utf8 {
+    let urlstr = url.absoluteString
+    var code = ""
+    for char in urlstr.utf8 {
         code = code + "u\(char)"
-      }
-      return "\(config.cacheRootDirectory)\(config.cacheFolderName)/\(code)"
     }
-    return nil
+    return "\(config.cacheRootDirectory)\(config.cacheFolderName)/\(code)"
   }
   
   private class func folderPath(config: Config) -> String {
