@@ -334,7 +334,9 @@ public class PIImageCache {
   
   private func prefetchQueueInit(){
     prefetchQueue.maxConcurrentOperationCount = config.prefetchOprationCount
-    prefetchQueue.qualityOfService = NSQualityOfService.Background
+    if #available(iOS 8.0, *) {
+      prefetchQueue.qualityOfService = NSQualityOfService.Background
+    }
   }
   
 }
